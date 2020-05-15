@@ -28,6 +28,7 @@ class Graphing(commands.Cog):
       ax.set_title(f'{ctx.message.author}\'s Graph')
       fig.savefig('plot.png')
       await ctx.send(file=discord.File('plot.png'))
+      await ctx.channel.purge(limit=1)
       ax.cla()
       os.remove('plot.png')
     except ValueError:
@@ -37,6 +38,8 @@ class Graphing(commands.Cog):
     if isinstance(error, commands.MissingRequiredArgument):
       embed = discord.Embed(title='Plot Command Usage', description='`.plot "x values" "y values"`')
       await ctx.send(embed=embed)
+    elif isinstance(error, commands.ExpectedClosingQuoteError):
+      await ctx.send('You didn\'t close the quotes properly.')
     else:
       raise error
 
