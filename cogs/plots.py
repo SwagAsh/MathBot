@@ -43,5 +43,74 @@ class Graphing(commands.Cog):
     else:
       raise error
 
+  @commands.group(invoke_without_command=True, aliases = ['pline'])
+  async def plotline(self, ctx):
+    await ctx.send('Plot a Line:\n.plotline si <slope> <y-intercept>\n.plotline st <xcoef> <ycoef> <const>')
+  @plotline.command(aliases = ['slopeintercept'])
+  async def si(self, ctx, slope, yint):
+    m = float(slope)
+    b = float(yint)
+    x = np.linspace(-10, 10, 100)
+    y = m*x+b
+    fig, ax = plt.subplots()
+    ax.set(xlim=(-10, 10), ylim=(-10, 10))
+    xax = [-10, 10]
+    yax = [0, 0]
+    xyax = [0, 0]
+    yyax = [-10, 10]
+    ax.plot(xax, yax, color='black')
+    ax.plot(xyax, yyax, color='black')
+    ax.plot(x,y)
+    ax.plot()
+    ax.set_title(f'{ctx.message.author}\'s Line')
+    ax.set_xlabel('X-Axis')
+    ax.set_ylabel('Y-Axis')
+    ax.grid()
+    fig.savefig('line.png')
+    await ctx.send(file=discord.File('line.png'))
+    ax.cla()
+    os.remove('line.png')
+  @si.error
+  async def si_error(self, ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+      embed=discord.Embed(title='Slope-Intercept Plot command usage:', description='`.plotline si <slope> <y-intercept>`')
+      await ctx.send(embed=embed)
+    else:
+      raise error
+  @plotline.command(aliases = ['standard'])
+  async def st(self, ctx, xcoef, ycoef, const):
+    xcoefficient = float(xcoef)
+    ycoefficient = float(ycoef)
+    constant = float(const)
+    slope = -xcoefficient/ycoefficient
+    yintercept = constant/ycoefficient
+    x = np.linspace(-10, 10, 100)
+    y = slope*x+yintercept
+    fig, ax = plt.subplots()
+    ax.set(xlim=(-10, 10), ylim=(-10, 10))
+    xax = [-10, 10]
+    yax = [0, 0]
+    xyax = [0, 0]
+    yyax = [-10, 10]
+    ax.plot(xax, yax, color='black')
+    ax.plot(xyax, yyax, color='black')
+    ax.plot(x,y)
+    ax.plot()
+    ax.set_title(f'{ctx.message.author}\'s Line')
+    ax.set_xlabel('X-Axis')
+    ax.set_ylabel('Y-Axis')
+    ax.grid()
+    fig.savefig('line.png')
+    await ctx.send(file=discord.File('line.png'))
+    ax.cla()
+    os.remove('line.png')
+  @st.error
+  async def st_error(self, ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+      embed=discord.Embed(title='Standard Form Plot command usage:', description='`.plotline st <xcoefficient> <ycoefficient> <constant>`')
+      await ctx.send(embed=embed)
+    else:
+      raise error
+
 def setup(client):
   client.add_cog(Graphing(client))
