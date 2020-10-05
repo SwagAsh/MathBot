@@ -89,5 +89,26 @@ class Arithmetic(commands.Cog):
     else:
       raise error
 
+  @commands.command(aliases=['exp'])
+  async def exponent(self, ctx, num1:float, num2:float, *nums:float):
+    expen = num1**num2
+    for num in nums:
+      expen = expen**num
+    strexp = str(expen)
+    if strexp.endswith('.0'):
+      await ctx.send(strexp[:-2])
+    else:
+      await ctx.send(strexp)
+  @exponent.error
+  async def exponent_error(self, ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+      embed = discord.Embed(title='Exponent Command Usage', description='`.exponent <num1> <num2> *[nums...]`')
+      embed.set_footer(text='Parameters with * in front of it are optional')
+      await ctx.send(embed=embed)
+    elif isinstance(error, commands.BadArgument):
+      await ctx.send('Please input a decimal or an integer value')
+    else:
+      raise error
+
 def setup(client):
   client.add_cog(Arithmetic(client))

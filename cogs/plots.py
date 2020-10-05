@@ -24,11 +24,10 @@ class Graphing(commands.Cog):
       y = np.array(newY).astype(np.float)
       fig, ax = plt.subplots()
       ax.set(xlim=(np.amin(x), np.amax(x)), ylim=(np.amin(y), np.amax(y)))
-      ax.plot(x,y)
+      ax.plot(x,y,marker='o')
       ax.set_title(f'{ctx.message.author}\'s Graph')
       fig.savefig('plot.png')
       await ctx.send(file=discord.File('plot.png'))
-      await ctx.channel.purge(limit=1)
       ax.cla()
       os.remove('plot.png')
     except ValueError:
@@ -53,11 +52,11 @@ class Graphing(commands.Cog):
     x = np.linspace(-10, 10, 100)
     y = m*x+b
     fig, ax = plt.subplots()
-    ax.set(xlim=(-10, 10), ylim=(-10, 10))
-    xax = [-10, 10]
+    ax.set(xlim=(-10, 10), ylim=(b-10, b+10))
+    xax = [-100, 100]
     yax = [0, 0]
     xyax = [0, 0]
-    yyax = [-10, 10]
+    yyax = [-100, 100]
     ax.plot(xax, yax, color='black')
     ax.plot(xyax, yyax, color='black')
     ax.plot(x,y)
@@ -87,11 +86,11 @@ class Graphing(commands.Cog):
     x = np.linspace(-10, 10, 100)
     y = slope*x+yintercept
     fig, ax = plt.subplots()
-    ax.set(xlim=(-10, 10), ylim=(-10, 10))
-    xax = [-10, 10]
+    ax.set(xlim=(-10, 10), ylim=(yintercept-10, yintercept+10))
+    xax = [-100, 100]
     yax = [0, 0]
     xyax = [0, 0]
-    yyax = [-10, 10]
+    yyax = [-100, 100]
     ax.plot(xax, yax, color='black')
     ax.plot(xyax, yyax, color='black')
     ax.plot(x,y)
@@ -111,6 +110,60 @@ class Graphing(commands.Cog):
       await ctx.send(embed=embed)
     else:
       raise error
+  @commands.group(invoke_without_command=True)
+  async def plotquad(self, ctx):
+    await ctx.send("Plotting Quadratics:\n.plotquad vf <coefficient> <xcoordinate> <ycoordinate>\n.plotquad st <coefficient1> <coefficient2> <constant>")
+  @plotquad.command(aliases = ['vertexform'])
+  async def vf(self, ctx, coeff, xcoord, ycoord):
+    a = float(coeff)
+    h = float(xcoord)
+    k = float(ycoord)
+    x = np.linspace(h-10, h+10, 100)
+    y = a*(x-h)**2 + k
+    fig, ax = plt.subplots()
+    ax.set(xlim=(h-10, h+10), ylim=(k-10, k+10))
+    xax = [-100, 100]
+    yax = [0, 0]
+    xyax = [0, 0]
+    yyax = [-100, 100]
+    ax.plot(xax, yax, color='black')
+    ax.plot(xyax, yyax, color='black')
+    ax.plot(x,y)
+    ax.plot()
+    ax.set_title(f'{ctx.message.author}\'s Quadratic')
+    ax.set_xlabel('X-Axis')
+    ax.set_ylabel('Y-Axis')
+    ax.grid()
+    fig.savefig('quad.png')
+    await ctx.send(file=discord.File('quad.png'))
+    ax.cla()
+    os.remove('quad.png')
+  @plotquad.command(aliases = ['standardform'])
+  async def st(self, ctx, acoef, bcoef, ccoef):
+    a = float(acoef)
+    b = float(bcoef)
+    c = float(ccoef)
+    x = np.linspace((-b/2*a) - 10, (-b/2*a) + 10, 100)
+    y = a*x**2+b*x+c
+    fig, ax = plt.subplots()
+    ax.set(xlim=((-b/2*a) - 10, (-b/2*a) + 10), ylim=(-10, 10))
+    xax = [-100, 100]
+    yax = [0, 0]
+    xyax = [0, 0]
+    yyax = [-100, 100]
+    ax.plot(xax, yax, color='black')
+    ax.plot(xyax, yyax, color='black')
+    ax.plot(x,y)
+    ax.plot()
+    ax.set_title(f'{ctx.message.author}\'s Quadratic')
+    ax.set_xlabel('X-Axis')
+    ax.set_ylabel('Y-Axis')
+    ax.grid()
+    fig.savefig('quads.png')
+    await ctx.send(file=discord.File('quads.png'))
+    ax.cla()
+    os.remove('quads.png')
+
 
 def setup(client):
   client.add_cog(Graphing(client))

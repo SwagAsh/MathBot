@@ -4,8 +4,27 @@ import flask
 import keep_alive
 from discord.ext import commands
 
+cprefix = {}
+prefix = ['.']
+
+async def determine_prefix(bot, message):
+    guild = message.guild
+    if guild:
+        return cprefix.get(guild.id, prefix)
+    else:
+        return prefix
+
 token = os.environ.get("DISCORD_BOT_SECRET")
-bot = commands.Bot(command_prefix='.')
+bot = commands.Bot(command_prefix=determine_prefix)
+
+@bot.command()
+@commands.guild_only()
+async def setprefix(ctx, *, prefixes=""):
+    if prefixes is None:
+      await ctx.send("You entered no parameters")
+    else:
+      cprefix[ctx.guild.id] = prefixes.split() or prefix
+      await ctx.send("Prefix set to `" + prefixes + "`")
 
 @bot.event
 async def on_ready():
