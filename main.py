@@ -1,6 +1,5 @@
 import discord
 import os
-import flask
 import keep_alive
 from discord.ext import commands
 
