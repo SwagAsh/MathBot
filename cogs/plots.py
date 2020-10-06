@@ -53,14 +53,9 @@ class Graphing(commands.Cog):
     y = m*x+b
     fig, ax = plt.subplots()
     ax.set(xlim=(-10, 10), ylim=(b-10, b+10))
-    xax = [-100, 100]
-    yax = [0, 0]
-    xyax = [0, 0]
-    yyax = [-100, 100]
-    ax.plot(xax, yax, color='black')
-    ax.plot(xyax, yyax, color='black')
+    plt.axhline(y=0, color='black', linestyle='-')
+    plt.axvline(x=0, color='black', linestyle='-')
     ax.plot(x,y)
-    ax.plot()
     ax.set_title(f'{ctx.message.author}\'s Line')
     ax.set_xlabel('X-Axis')
     ax.set_ylabel('Y-Axis')
@@ -87,14 +82,9 @@ class Graphing(commands.Cog):
     y = slope*x+yintercept
     fig, ax = plt.subplots()
     ax.set(xlim=(-10, 10), ylim=(yintercept-10, yintercept+10))
-    xax = [-100, 100]
-    yax = [0, 0]
-    xyax = [0, 0]
-    yyax = [-100, 100]
-    ax.plot(xax, yax, color='black')
-    ax.plot(xyax, yyax, color='black')
+    plt.axhline(y=0, color='black', linestyle='-')
+    plt.axvline(x=0, color='black', linestyle='-')
     ax.plot(x,y)
-    ax.plot()
     ax.set_title(f'{ctx.message.author}\'s Line')
     ax.set_xlabel('X-Axis')
     ax.set_ylabel('Y-Axis')
@@ -122,14 +112,9 @@ class Graphing(commands.Cog):
     y = a*(x-h)**2 + k
     fig, ax = plt.subplots()
     ax.set(xlim=(h-10, h+10), ylim=(k-10, k+10))
-    xax = [-100, 100]
-    yax = [0, 0]
-    xyax = [0, 0]
-    yyax = [-100, 100]
-    ax.plot(xax, yax, color='black')
-    ax.plot(xyax, yyax, color='black')
+    plt.axhline(y=0, color='black', linestyle='-')
+    plt.axvline(x=0, color='black', linestyle='-')
     ax.plot(x,y)
-    ax.plot()
     ax.set_title(f'{ctx.message.author}\'s Quadratic')
     ax.set_xlabel('X-Axis')
     ax.set_ylabel('Y-Axis')
@@ -143,18 +128,14 @@ class Graphing(commands.Cog):
     a = float(acoef)
     b = float(bcoef)
     c = float(ccoef)
-    x = np.linspace((-b/2*a) - 10, (-b/2*a) + 10, 100)
+    d = b**2 - 4*a*c
+    x = np.linspace((-b/2*a) - 50, (-b/2*a) + 50, 500)
     y = a*x**2+b*x+c
     fig, ax = plt.subplots()
-    ax.set(xlim=((-b/2*a) - 10, (-b/2*a) + 10), ylim=(-10, 10))
-    xax = [-100, 100]
-    yax = [0, 0]
-    xyax = [0, 0]
-    yyax = [-100, 100]
-    ax.plot(xax, yax, color='black')
-    ax.plot(xyax, yyax, color='black')
+    ax.set(xlim=(-b/(2*a) - 10, -b/(2*a) + 10), ylim=(-d/(4*a)-10, -d/(4*a)+10))
+    plt.axhline(y=0, color='black', linestyle='-')
+    plt.axvline(x=0, color='black', linestyle='-')
     ax.plot(x,y)
-    ax.plot()
     ax.set_title(f'{ctx.message.author}\'s Quadratic')
     ax.set_xlabel('X-Axis')
     ax.set_ylabel('Y-Axis')

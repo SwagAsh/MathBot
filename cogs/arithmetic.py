@@ -1,3 +1,4 @@
+import math
 import discord
 from discord.ext import commands
 
@@ -91,14 +92,17 @@ class Arithmetic(commands.Cog):
 
   @commands.command(aliases=['exp'])
   async def exponent(self, ctx, num1:float, num2:float, *nums:float):
-    expen = num1**num2
-    for num in nums:
-      expen = expen**num
-    strexp = str(expen)
-    if strexp.endswith('.0'):
-      await ctx.send(strexp[:-2])
-    else:
-      await ctx.send(strexp)
+    try:
+      expen = num1**num2
+      for num in nums:
+        expen = expen**num
+      strexp = str(expen)
+      if strexp.endswith('.0'):
+        await ctx.send(strexp[:-2])
+      else:
+        await ctx.send(strexp)
+    except OverflowError:
+      await ctx.send("Input was too large, stack overflowed.")
   @exponent.error
   async def exponent_error(self, ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
@@ -109,6 +113,72 @@ class Arithmetic(commands.Cog):
       await ctx.send('Please input a decimal or an integer value')
     else:
       raise error
+
+  @commands.command()
+  async def root(self, ctx, num1:float, num2:float, *nums:float):
+    try:
+      rott = num1**(1/num2)
+      for num in nums:
+        rott = rott**(1/num)
+      stroot = str(rott)
+      if stroot.endswith('.0'):
+        await ctx.send(stroot[:-2])
+      else:
+        await ctx.send(stroot)
+    except ZeroDivisionError:
+      await ctx.send("Cannot take 0th root.")
+  @root.error
+  async def root_error(self, ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+      embed = discord.Embed(title='Root Command Usage', description='`.root <num1> <num2> *[nums...]`')
+      embed.set_footer(text='Parameters with * in front of it are optional')
+      await ctx.send(embed=embed)
+    elif isinstance(error, commands.BadArgument):
+      await ctx.send('Please input a decimal or an integer value')
+    else:
+      raise error
+
+  @commands.command(aliases = ['log'])
+  async def logarithm(self, ctx, num1:float, num2:float, *nums:float):
+    try:
+      logg = math.log(num1, num2)
+      for num in nums:
+        logg = math.log(logg, num)
+      strog = str(logg)
+      if strog.endswith('.0'):
+        await ctx.send(strog[:-2])
+      else:
+        await ctx.send(strog)
+    except ValueError:
+      await ctx.send("Cannot take log 0.")
+  @logarithm.error
+  async def logarithm_error(self, ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+      embed = discord.Embed(title='Logarithm Command Usage', description='`.root <num1> <num2> *[nums...]`')
+      embed.set_footer(text='Parameters with * in front of it are optional')
+      await ctx.send(embed=embed)
+    elif isinstance(error, commands.BadArgument):
+      await ctx.send('Please input a decimal or an integer value')
+    else:
+      raise error
+
+  @commands.command(aliases=['mod', 'remainder'])
+  async def modulo(self, ctx, num1:int, num2:int, *nums:int):
+    modd = num1 % num2
+    for num in nums:
+      modd = modd % num
+    await ctx.send(modd)
+  @modulo.error
+  async def modulo_error(self, ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+      embed = discord.Embed(title='Modulo Command Usage', description='`.modulo <num1> <num2> *[nums...]`')
+      embed.set_footer(text='Parameters with * in front of it are optional')
+      await ctx.send(embed=embed)
+    elif isinstance(error, commands.BadArgument):
+      await ctx.send('Please input an integer value')
+    else:
+      raise error
+
 
 def setup(client):
   client.add_cog(Arithmetic(client))
